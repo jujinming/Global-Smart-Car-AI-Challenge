@@ -120,5 +120,5 @@ for video_path in paths:
         
     submit_json["test_results"].append(single_video_result)
 
-    with open('clip_result.json', 'w', encoding='utf-8') as up:
+    with open('江浙小队_result.json', 'w', encoding='utf-8') as up:
         json.dump(submit_json, up, ensure_ascii=False)
