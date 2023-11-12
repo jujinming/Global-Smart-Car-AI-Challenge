@@ -10,7 +10,7 @@ from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
 
-#忽略ssl验证
+# 忽略ssl验证
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = False
 ssl_context.verify_mode = ssl.CERT_NONE
