@@ -9,8 +9,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
-import pandas as pd
-import geopandas
+#fuck github
 #push测试
 # 忽略ssl验证
 ssl_context = ssl.create_default_context()
