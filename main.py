@@ -110,7 +110,7 @@ for video_path in paths:
 
         probs = probs.numpy()
         single_video_result[keyword] = texts[probs[0].argsort()[::-1][0]]
-#hello jinming ju and han yan
+        
     submit_json["test_results"].append(single_video_result)
 
     with open('clip_result.json', 'w', encoding='utf-8') as up:
