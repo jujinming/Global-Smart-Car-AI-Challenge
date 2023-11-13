@@ -82,7 +82,7 @@ paths.sort()
 for video_path in paths:
     print(video_path)
 
-    clip_id = video_path.split('/')[-1]
+    clip_id = video_path.split('\\')[-1]
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     cap.set(cv2.CAP_PROP_POS_FRAMES,total_frames/2)
@@ -106,7 +106,7 @@ for video_path in paths:
     }
 
     for keyword in en_match_words.keys():
-        if keyword not in ["weather", "road_structure"]:
+        if keyword not in ["weather", "period", "road_structure"]:
             continue
 
         texts = np.array(en_match_words[keyword])
