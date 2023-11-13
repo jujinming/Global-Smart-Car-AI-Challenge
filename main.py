@@ -9,8 +9,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
-#fuck github！！！
-#push测试
+
 # 忽略ssl验证
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = False
@@ -71,7 +70,7 @@ image.resize((600, 300))
 
 submit_json = {
     "author": "jujinming",
-    "time": "231112",
+    "time": "231113",
     "model": "model_name",
     "test_results": []
 }
@@ -88,7 +87,7 @@ for video_path in paths:
     cap.set(cv2.CAP_PROP_POS_FRAMES,total_frames/2)
     img = cap.read()[1]
 
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
     image = transforms(image).unsqueeze(0)
 
@@ -102,7 +101,7 @@ for video_path in paths:
         "abnormal_condition": "nothing",
         "ego_car_behavior": "go straight",
         "closest_participants_type": "passenger car",
-        "closest_participants_behavior": "braking"
+        "closest_participants_behavior": "slow down"
     }
 
     for keyword in en_match_words.keys():
