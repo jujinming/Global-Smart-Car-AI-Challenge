@@ -10,7 +10,7 @@ from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
 #fuck github！！！
-#push测试
+#测试111
 # 忽略ssl验证
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = False
