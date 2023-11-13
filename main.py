@@ -9,8 +9,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
-#fuck github！！！
-#测试111
+
 # 忽略ssl验证
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = False
@@ -70,9 +69,9 @@ image = Image.fromarray(image)
 image.resize((600, 300))
 
 submit_json = {
-    "author": "jujinming",
-    "time": "231112",
-    "model": "model_name",
+    "author": "jzxd",
+    "time": "231113",
+    "model": "VitB/32",
     "test_results": []
 }
 
@@ -83,12 +82,13 @@ for video_path in paths:
     print(video_path)
 
     clip_id = video_path.split('/')[-1]
+    print(clip_id)
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     cap.set(cv2.CAP_PROP_POS_FRAMES,total_frames/2)
     img = cap.read()[1]
 
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
     image = transforms(image).unsqueeze(0)
 
@@ -102,7 +102,7 @@ for video_path in paths:
         "abnormal_condition": "nothing",
         "ego_car_behavior": "go straight",
         "closest_participants_type": "passenger car",
-        "closest_participants_behavior": "braking"
+        "closest_participants_behavior": "slow down"
     }
 
     for keyword in en_match_words.keys():
@@ -120,5 +120,5 @@ for video_path in paths:
         
     submit_json["test_results"].append(single_video_result)
 
-    with open('江浙小队_result.json', 'w', encoding='utf-8') as up:
+    with open('jzxd_result.json', 'w', encoding='utf-8') as up:
         json.dump(submit_json, up, ensure_ascii=False)
