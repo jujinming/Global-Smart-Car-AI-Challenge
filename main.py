@@ -9,8 +9,7 @@ import numpy as np
 from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
 import ssl
-#fuck github！！！
-#测试111
+
 # 忽略ssl验证
 ssl_context = ssl.create_default_context()
 ssl_context.check_hostname = False
@@ -52,7 +51,15 @@ cn_match_words = {
 }
 
 en_match_words = {
-"scerario" : ["suburbs","city street","expressway","tunnel","parking-lot","gas or charging stations","unknown"],
+"scerario": [
+        "rugged, narrow, hills, mountains, wild animals.",
+        "curb, wide and flat road, roadblock, sign, building, streetlight, city street, pedestrians.",
+        "designated exits, service areas",
+        "tunnel, dark environment.",
+        "Underground, parking garage",
+        "gas pump nozzle, charging equipment.",
+        "unknown"
+    ],
 "weather" : ["clear","cloudy","raining","foggy","snowy","unknown"],
 "period" : ["daytime","dawn or dusk","night","unknown"],
 "road_structure" : ["normal","crossroads","T-junction","ramp","lane merging","parking lot entrance","round about","unknown"],
@@ -62,7 +69,15 @@ en_match_words = {
 "closest_participants_type" : ["passenger car","bus","truck","pedestrain","policeman","nothing","others","unknown"],
 "closest_participants_behavior" : ["slow down","go straight","turn right","turn left","stop","U-turn","speed up","lane change","others"],
 }
-
+replacement_mapping = {
+    "rugged, narrow, hills, mountains, wild animals.": "suburbs",
+    "curb, wide and flat road, roadblock, sign, building, streetlight, city street, pedestrians.": "city street",
+    "designated exits, service areas": "expressway",
+    "tunnel, dark environment.": "tunnel",
+    "Underground, parking garage": "parking-lot",
+    "gas pump nozzle, charging equipment.": "gas or charging stations",
+    "unknown": "unknown"
+}
 cap = cv2.VideoCapture('./初赛测试视频/41.avi')
 img = cap.read()[1]
 image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -70,9 +85,9 @@ image = Image.fromarray(image)
 image.resize((600, 300))
 
 submit_json = {
-    "author": "jujinming",
-    "time": "231112",
-    "model": "model_name",
+    "author": "jzxd",
+    "time": "231113",
+    "model": "VitB/32",
     "test_results": []
 }
 
@@ -88,7 +103,7 @@ for video_path in paths:
     cap.set(cv2.CAP_PROP_POS_FRAMES,total_frames/2)
     img = cap.read()[1]
 
-    image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    image = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     image = Image.fromarray(image)
     image = transforms(image).unsqueeze(0)
 
@@ -102,23 +117,27 @@ for video_path in paths:
         "abnormal_condition": "nothing",
         "ego_car_behavior": "go straight",
         "closest_participants_type": "passenger car",
-        "closest_participants_behavior": "braking"
+        "closest_participants_behavior": "slow down"
     }
 
     for keyword in en_match_words.keys():
-        if keyword not in ["weather", "period", "road_structure"]:
+        if keyword not in ["scerario", "weather", "period", "road_structure"]:
             continue
-
-        texts = np.array(en_match_words[keyword])
+        if keyword == "scerario":
+            texts = np.array([replacement_mapping[val] if val in replacement_mapping else val for val in en_match_words[keyword]])
+        else:
+            texts = np.array(en_match_words[keyword])
 
         with paddle.no_grad():
             logits_per_image, logits_per_text = model(image, tokenize(en_match_words[keyword]))
             probs = paddle.nn.functional.softmax(logits_per_image, axis=-1)
 
         probs = probs.numpy()
+        if(keyword == 'scerario'):
+            print(probs)
         single_video_result[keyword] = texts[probs[0].argsort()[::-1][0]]
         
     submit_json["test_results"].append(single_video_result)
 
-    with open('江浙小队_result.json', 'w', encoding='utf-8') as up:
+    with open('jzxd_result.json', 'w', encoding='utf-8') as up:
         json.dump(submit_json, up, ensure_ascii=False)
